@@ -16,6 +16,7 @@ import { CommandPalette } from './components/CommandPalette';
 import { StatsDashboard } from './components/StatsDashboard';
 import { PostMortemGenerator } from './components/PostMortemGenerator';
 import { CardSkeleton } from './components/ui/Skeleton';
+import { useVersion } from './hooks/useVersion';
 
 type ViewState = 'landing' | 'feed' | 'calculator' | 'wizard' | 'checklist' | 'dev-portal' | 'analytics' | 'generator';
 type FeedMode = 'list' | 'timeline';
@@ -31,8 +32,9 @@ function App() {
   const [selectedEntry, setSelectedEntry] = useState<FailureEntry | null>(null);
   const [theme, setTheme] = useState<Theme>('dark');
   const [isCmdOpen, setIsCmdOpen] = useState(false);
-  
+
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { version } = useVersion();
 
   // Memoize the Request ID so it doesn't change on every render (e.g. typing in search)
   const reqId = useMemo(() => Math.floor(Math.random() * 9000) + 1000, []);
@@ -278,7 +280,7 @@ function App() {
                 <h1 className="text-sm font-bold tracking-wider text-zinc-900 dark:text-white uppercase">
                 Awesome Tech Failures
                 </h1>
-                <span className="text-[10px] text-zinc-500 font-mono tracking-widest group-hover:text-zinc-400 transition-colors">v2.0.26_STABLE</span>
+                <span className="text-[10px] text-zinc-500 font-mono tracking-widest group-hover:text-zinc-400 transition-colors">{version}</span>
             </div>
           </div>
           
