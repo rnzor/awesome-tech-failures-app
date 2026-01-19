@@ -1,0 +1,7 @@
+{
+  "name": "awesome-tech-failures-app",
+  "compatibility_date": "2026-01-19",
+  "assets": {
+    "directory": "./dist"
+  }
+}
