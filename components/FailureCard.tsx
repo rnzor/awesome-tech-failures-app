@@ -88,7 +88,7 @@ export const FailureCard: React.FC<Props> = ({ entry, onClick }) => {
               style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}
               onMouseEnter={() => setIsRootHovered(true)}
               onMouseLeave={() => setIsRootHovered(false)}
-              onClick={(e) => { e.stopPropagation(); setIsRootHovered(!isRootHovered); }}
+              onClick={() => setIsRootHovered(!isRootHovered)}
             >
               <span className={`forensic-label absolute -top-4 left-0 transition-opacity duration-300 ${isRootHovered ? 'opacity-100 digital-blink text-red-500' : 'opacity-0'}`}>
                 PRIMARY FAILURE VECTOR
@@ -100,10 +100,10 @@ export const FailureCard: React.FC<Props> = ({ entry, onClick }) => {
                 <p className="text-zinc-800 dark:text-zinc-300 text-sm font-bold line-clamp-2">{entry.root_cause}</p>
               </div>
 
-              {/* Extracted Layer (Direct interaction layer) */}
+              {/* Extracted Layer (Direct interaction layer) - DESKTOP ONLY */}
               <div
-                className={`absolute -inset-4 h-fit min-h-full p-4 rounded-none border transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] ${isRootHovered ? 'opacity-100 shadow-[0_0_50px_rgba(239,68,68,0.4),0_0_150px_100px_rgba(0,0,0,0.95)] z-50' : 'opacity-0 pointer-events-none'
-                  } bg-zinc-950 border-red-500/30 flex flex-col`}
+                className={`hidden md:flex absolute -inset-4 h-fit min-h-full p-4 rounded-none border transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] ${isRootHovered ? 'opacity-100 shadow-[0_0_50px_rgba(239,68,68,0.4),0_0_150px_100px_rgba(0,0,0,0.95)] z-50' : 'opacity-0 pointer-events-none'
+                  } bg-zinc-950 border-red-500/30 flex-col`}
                 style={{
                   transform: isRootHovered ? 'translateZ(120px) rotateX(-1deg)' : 'translateZ(0)',
                   transformStyle: 'preserve-3d'
@@ -148,6 +148,15 @@ export const FailureCard: React.FC<Props> = ({ entry, onClick }) => {
                 <div className="corner-bracket corner-tr border-red-500/40" />
                 <div className="corner-bracket corner-bl border-red-500/40" />
                 <div className="corner-bracket corner-br border-red-500/40" />
+              </div>
+
+              {/* Mobile Inline View (No extraction) */}
+              <div className="md:hidden mt-2 p-3 bg-zinc-950 border border-red-500/30 rounded font-mono text-xs">
+                <div className="flex gap-2 text-red-500/80 mb-2 border-b border-white/10 pb-2">
+                  <span className="shrink-0 animate-pulse">#</span>
+                  <span className="typing-command truncate">fetch(".../api/v1/failures.json")</span>
+                </div>
+                <div className="text-zinc-100 font-bold whitespace-pre-wrap">{entry.root_cause}</div>
               </div>
             </div>
           )}
