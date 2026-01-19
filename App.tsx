@@ -104,6 +104,9 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [searchTerm, currentView, selectedEntry, isCmdOpen]);
 
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [selectedSeverity, setSelectedSeverity] = useState<string | null>(null);
+
   const filteredEntries = useMemo(() => {
     let result = entries;
 
@@ -116,8 +119,38 @@ function App() {
       result = result.filter(entry => entry.category === selectedCategory);
     }
 
+    if (selectedYear) {
+      result = result.filter(entry => entry.year === selectedYear);
+    }
+
+    if (selectedSeverity) {
+      result = result.filter(entry => entry.severity.level === selectedSeverity);
+    }
+
     return result;
-  }, [entries, searchTerm, selectedCategory, fuse]);
+  }, [entries, searchTerm, selectedCategory, selectedYear, selectedSeverity, fuse]);
+
+  const handleFilterIncidents = (filters: { category?: Category; year?: number; severity?: string }) => {
+    if (filters.category) setSelectedCategory(filters.category);
+    if (filters.year) {
+      setSelectedYear(filters.year);
+    } else {
+      setSelectedYear(null);
+    }
+    if (filters.severity) {
+      setSelectedSeverity(filters.severity);
+    } else {
+      setSelectedSeverity(null);
+    }
+    setCurrentView('feed');
+  };
+
+  const handleCategoryJump = (cat: Category) => {
+    setSelectedCategory(cat);
+    setSelectedYear(null);
+    setSelectedSeverity(null);
+    setCurrentView('feed');
+  };
 
   const counts = useMemo(() => {
     const tempCounts: Record<string, number> = { 'All': entries.length };
@@ -136,15 +169,10 @@ function App() {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
-  const handleCategoryJump = (cat: Category) => {
-    setSelectedCategory(cat);
-    setCurrentView('feed');
-  };
-
   const renderContent = () => {
     switch (currentView) {
       case 'landing':
-        return <LandingPage onNavigate={setCurrentView} entries={entries} onSelectEntry={setSelectedEntry} />;
+        return <LandingPage onNavigate={setCurrentView} entries={entries} onSelectEntry={setSelectedEntry} onFilterIncidents={handleFilterIncidents} />;
       case 'calculator':
         return <SeverityCalculator />;
       case 'wizard':
@@ -250,12 +278,20 @@ function App() {
             ) : (
               <div className="text-center py-20 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-lg bg-zinc-50 dark:bg-zinc-900/10">
                 <p className="text-zinc-600 dark:text-zinc-400 text-lg font-light">No failures found matching parameters.</p>
-                <button
-                  onClick={() => { setSearchTerm(''); setSelectedCategory('All'); }}
-                  className="mt-4 text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 text-xs font-mono uppercase tracking-widest border-b border-blue-500/30 hover:border-blue-500 pb-1"
-                >
-                  [ Clear Filters ]
-                </button>
+                <div className="flex flex-col items-center gap-2 mt-4">
+                  {(selectedYear || selectedSeverity) && (
+                    <div className="flex gap-2 text-[10px] font-mono mb-2">
+                      {selectedYear && <span className="px-2 py-0.5 bg-blue-500/10 text-blue-500 border border-blue-500/20 rounded">YEAR: {selectedYear}</span>}
+                      {selectedSeverity && <span className="px-2 py-0.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded">SEVERITY: {selectedSeverity.toUpperCase()}</span>}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => { setSearchTerm(''); setSelectedCategory('All'); setSelectedYear(null); setSelectedSeverity(null); }}
+                    className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 text-xs font-mono uppercase tracking-widest border-b border-blue-500/30 hover:border-blue-500 pb-1"
+                  >
+                    [ Clear Filters ]
+                  </button>
+                </div>
               </div>
             )}
           </>

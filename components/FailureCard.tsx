@@ -109,8 +109,16 @@ export const FailureCard: React.FC<Props> = ({ entry, onClick }) => {
           </div>
         </div>
 
+        {/* Pattern Hint */}
+        {entry.patterns && entry.patterns.length > 0 && (
+          <div className="mb-2 flex items-center gap-1.5 overflow-hidden">
+            <span className="text-[10px] font-mono font-black text-blue-500 dark:text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">Pattern</span>
+            <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300 truncate italic">"{entry.patterns[0]}"</span>
+          </div>
+        )}
+
         {/* Summary Description */}
-        <p className="text-zinc-600 dark:text-zinc-300 text-sm leading-relaxed mb-4 line-clamp-3">
+        <p className="text-zinc-600 dark:text-zinc-300 text-sm leading-relaxed mb-4 line-clamp-2">
           {entry.summary}
         </p>
 

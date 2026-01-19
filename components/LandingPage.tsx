@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { FailureEntry } from '../types';
+import { FailureEntry, Category } from '../types';
 import { IncidentHeatmap } from './IncidentHeatmap';
 
 interface Props {
   onNavigate: (view: any) => void;
   entries: FailureEntry[];
   onSelectEntry: (entry: FailureEntry) => void;
+  onFilterIncidents?: (filters: { category?: Category; year?: number; severity?: string }) => void;
 }
 
 const TERMINAL_LINES = [
@@ -109,7 +110,7 @@ const Ticker: React.FC<{ entries: FailureEntry[]; onSelectEntry: (entry: Failure
 
 
 
-export const LandingPage: React.FC<Props> = ({ onNavigate, entries, onSelectEntry }) => {
+export const LandingPage: React.FC<Props> = ({ onNavigate, entries, onSelectEntry, onFilterIncidents }) => {
   const [typedText, setTypedText] = useState('');
 
   const fullText = "Studying failure is a competitive advantage.";
@@ -222,7 +223,7 @@ export const LandingPage: React.FC<Props> = ({ onNavigate, entries, onSelectEntr
                 <div className="w-2 h-2 rounded-full bg-zinc-800"></div>
               </div>
             </div>
-            <IncidentHeatmap entries={entries} />
+            <IncidentHeatmap entries={entries} onCellClick={onFilterIncidents} />
           </div>
 
           <div className="lg:col-span-4 space-y-4">
@@ -231,9 +232,9 @@ export const LandingPage: React.FC<Props> = ({ onNavigate, entries, onSelectEntr
               className="w-full group relative px-8 py-8 bg-zinc-900 dark:bg-white text-white dark:text-black font-black text-2xl rounded-3xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 shadow-2xl"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <span className="relative flex flex-col items-center">
+              <span className="relative flex flex-col items-center text-center">
                 <span className="uppercase tracking-tighter">Enter_The_Index</span>
-                <span className="text-[10px] font-mono mt-2 opacity-50 font-bold tracking-[0.4em]">START_RESEARCH</span>
+                <span className="text-[10px] font-mono mt-2 opacity-50 font-bold tracking-[0.05em] leading-tight">Explore failure patterns and incidents</span>
               </span>
             </button>
 

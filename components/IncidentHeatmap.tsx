@@ -1,14 +1,15 @@
 import React, { useMemo, useState } from 'react';
-import { FailureEntry } from '../types';
+import { FailureEntry, Category } from '../types';
 
 interface Props {
     entries: FailureEntry[];
+    onCellClick?: (params: { category?: Category; year?: number; severity?: string }) => void;
 }
 
-export const IncidentHeatmap: React.FC<Props> = ({ entries }) => {
-    const [hoveredCell, setHoveredCell] = useState<{ label: string, count: number, score: number, topSeverity: string } | null>(null);
+export const IncidentHeatmap: React.FC<Props> = ({ entries, onCellClick }) => {
+    const [hoveredCell, setHoveredCell] = useState<{ label: string, count: number, score: number, topSeverity: string, year: number, category: Category } | null>(null);
 
-    const CATEGORIES = [
+    const CATEGORIES: { id: Category; label: string }[] = [
         { id: 'ai-slop', label: 'AI' },
         { id: 'outage', label: 'OUT' },
         { id: 'security', label: 'SEC' },
@@ -81,17 +82,21 @@ export const IncidentHeatmap: React.FC<Props> = ({ entries }) => {
     return (
         <div className="w-full">
             {/* Header */}
-            <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-zinc-500">
-                    Temporal_Incident_Map
-                </span>
-                <div className="flex items-center gap-1.5 text-[8px] font-mono text-zinc-500">
-                    <div className="w-2 h-2 bg-zinc-300 dark:bg-zinc-700 rounded-sm"></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-sm"></div>
-                    <div className="w-2 h-2 bg-yellow-500 rounded-sm"></div>
-                    <div className="w-2 h-2 bg-orange-500 rounded-sm"></div>
-                    <div className="w-2 h-2 bg-red-500 rounded-sm shadow-[0_0_3px_red]"></div>
+            <div className="flex flex-col mb-3">
+                <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-zinc-500">
+                        Temporal_Incident_Map
+                    </span>
+                    <div className="flex items-center gap-1.5 text-[8px] font-mono text-zinc-500">
+                        <button onClick={() => onCellClick?.({ severity: 'low' })} className="w-2.5 h-2.5 bg-blue-500 rounded-sm hover:scale-125 transition-transform" title="Filter Low"></button>
+                        <button onClick={() => onCellClick?.({ severity: 'medium' })} className="w-2.5 h-2.5 bg-yellow-500 rounded-sm hover:scale-125 transition-transform" title="Filter Medium"></button>
+                        <button onClick={() => onCellClick?.({ severity: 'high' })} className="w-2.5 h-2.5 bg-orange-500 rounded-sm hover:scale-125 transition-transform" title="Filter High"></button>
+                        <button onClick={() => onCellClick?.({ severity: 'critical' })} className="w-2.5 h-2.5 bg-red-500 rounded-sm shadow-[0_0_3px_red] hover:scale-125 transition-transform" title="Filter Critical"></button>
+                    </div>
                 </div>
+                <p className="text-[10px] font-mono text-zinc-500 dark:text-zinc-600 mt-1 italic">
+                    Incident density by category and year. Red = high severity.
+                </p>
             </div>
 
             {/* Heatmap Grid */}
@@ -117,11 +122,12 @@ export const IncidentHeatmap: React.FC<Props> = ({ entries }) => {
                             {CATEGORIES.map(cat => {
                                 const cell = gridData.find(d => d.year === year && d.category === cat.id)!;
                                 return (
-                                    <div
+                                    <button
                                         key={`${year}-${cat.id}`}
                                         onMouseEnter={() => setHoveredCell(cell.count > 0 ? cell : null)}
                                         onMouseLeave={() => setHoveredCell(null)}
-                                        className={`h-5 rounded transition-all duration-200 ${getColor(cell.score)} cursor-default hover:scale-110 hover:z-10`}
+                                        onClick={() => cell.count > 0 && onCellClick?.({ category: cell.category, year: cell.year })}
+                                        className={`h-5 w-full rounded transition-all duration-200 ${getColor(cell.score)} ${cell.count > 0 ? 'cursor-pointer hover:scale-110 hover:z-10 ring-blue-500/50 hover:ring-1' : 'cursor-default opacity-40'}`}
                                     />
                                 );
                             })}
@@ -137,7 +143,7 @@ export const IncidentHeatmap: React.FC<Props> = ({ entries }) => {
             </div>
 
             {/* Hover Info */}
-            <div className="h-8 mt-3 pt-2 border-t border-zinc-200 dark:border-zinc-800/50 text-[10px] font-mono text-zinc-500 flex items-center">
+            <div className="h-8 mt-3 pt-2 border-t border-zinc-200 dark:border-zinc-800/50 text-[10px] font-mono text-zinc-500 flex items-center justify-between">
                 {hoveredCell ? (
                     <div className="flex items-center gap-3 animate-in fade-in duration-200">
                         <span className="text-zinc-900 dark:text-white font-black">{hoveredCell.label}</span>
@@ -150,8 +156,11 @@ export const IncidentHeatmap: React.FC<Props> = ({ entries }) => {
                     </div>
                 ) : (
                     <span className="text-zinc-400 opacity-50 uppercase tracking-wider text-[9px]">
-                        Hover for details
+                        Hover for details • Click to filter
                     </span>
+                )}
+                {hoveredCell && (
+                    <span className="text-[9px] text-blue-500 font-bold animate-pulse">CLICK_TO_DRILL_DOWN</span>
                 )}
             </div>
         </div>
