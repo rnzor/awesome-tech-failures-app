@@ -1,0 +1,53 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Failure Registry",
+  "alternateName": "Awesome Tech Failures",
+  "description": "A curated, high-signal index of technology failures, outages, and UX disasters for post-mortem analysis. Learn from others' mistakes to build more resilient systems.",
+  "url": "https://failureregistry.com",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://failureregistry.com/?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  },
+  "about": {
+    "@type": "Thing",
+    "name": "Technology Failures",
+    "description": "Documented technology failures, outages, and incidents from major companies including AWS, Cloudflare, GitHub, Microsoft, and more."
+  },
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Software Engineers, DevOps, Security Professionals, CTOs"
+  },
+  "creator": {
+    "@type": "Organization",
+    "name": "rnzor",
+    "url": "https://github.com/rnzor"
+  },
+  "sameAs": [
+    "https://github.com/rnzor/awesome-tech-failures"
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Collection",
+  "name": "Failure Database",
+  "description": "62 documented tech failures, outages, and incidents",
+  "url": "https://failureregistry.com",
+  "numberOfItems": 62,
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "CrowdStrike — Faulty Falcon Sensor Update (2024)", "url": "https://failureregistry.com/#crowdstrike-faulty-falcon-sensor-update-2024"},
+    {"@type": "ListItem", "position": 2, "name": "Knight Capital — $440M Trading Loss in Minutes (2012)", "url": "https://failureregistry.com/#knight-capital-440m-trading-loss-in-minutes-2012"},
+    {"@type": "ListItem", "position": 3, "name": "AWS — S3 Typo Takes Down us-east-1 (2017)", "url": "https://failureregistry.com/#aws-s3-typo-takes-down-us-east-1-2017"},
+    {"@type": "ListItem", "position": 4, "name": "Log4Shell — Global Remote Code Execution (2021)", "url": "https://failureregistry.com/#log4shell-global-remote-code-execution-2021"},
+    {"@type": "ListItem", "position": 5, "name": "HyperSense — 88% of AI Agents Fail to Reach Production (2026)", "url": "https://failureregistry.com/#hypersense-88-of-ai-agents-fail-to-reach-production-2026"}
+  ]
+}
+</script>
